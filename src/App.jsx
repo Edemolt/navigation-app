@@ -8,16 +8,15 @@ import './styles.scss';
 
 mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_ACCESS_TOKEN;
 
+// Use a dark style that includes a colorful sprite for navigation
+const darkStyle = 'mapbox://styles/mapbox/navigation-guidance-night-v4';
+
 const App = () => {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
-  const [isDarkMode, setIsDarkMode] = useState(true);
   const [routeData, setRouteData] = useState(null);
 
-  const lightStyle = 'mapbox://styles/mapbox/streets-v11';
-  const darkStyle = 'mapbox://styles/mapbox/dark-v10';
-
-  // Refs for controls (we no longer need navControlRef)
+  // Refs for controls
   const geoControlRef = useRef(null);
   const directionsControlRef = useRef(null);
 
@@ -42,8 +41,6 @@ const App = () => {
 
   // Function to add controls
   const addControls = (map) => {
-    // Remove NavigationControl so zoom in/out buttons are not added.
-
     // Geolocate control
     geoControlRef.current = new mapboxgl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
@@ -60,7 +57,7 @@ const App = () => {
       }
     });
 
-    // Add the Directions control only after the style is loaded.
+    // Add the Directions control after the style is loaded.
     if (!map.isStyleLoaded()) {
       map.once('style.load', () => {
         addDirectionsControl(map);
@@ -110,7 +107,7 @@ const App = () => {
   useEffect(() => {
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: isDarkMode ? darkStyle : lightStyle,
+      style: darkStyle,
       center: [77.2295, 28.6129],
       zoom: 9,
     });
@@ -122,21 +119,6 @@ const App = () => {
     // Cleanup on unmount
     return () => map.remove();
   }, []);
-
-  useEffect(() => {
-    if (mapRef.current) {
-      // Remove old controls before applying the new style.
-      removeControls(mapRef.current);
-
-      const newStyle = isDarkMode ? darkStyle : lightStyle;
-      mapRef.current.setStyle(newStyle);
-
-      // Once the new style loads, re-add the controls.
-      mapRef.current.once('style.load', () => {
-        addControls(mapRef.current);
-      });
-    }
-  }, [isDarkMode]);
 
   // Update (or add) the route layer whenever routeData changes.
   useEffect(() => {
@@ -167,28 +149,7 @@ const App = () => {
     }
   }, [routeData]);
 
-  const toggleDarkMode = () => {
-    setIsDarkMode((prevMode) => !prevMode);
-  };
-
-  return (
-    <>
-      <button className="toggle-button" onClick={toggleDarkMode}>
-        {isDarkMode ? (
-          // If dark mode is active, show a sun icon (click to switch to light mode)
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 4.354a.75.75 0 0 1 .75.75v2.292a.75.75 0 0 1-1.5 0V5.104A.75.75 0 0 1 12 4.354zM12 16.604a.75.75 0 0 1 .75.75v2.292a.75.75 0 0 1-1.5 0v-2.292a.75.75 0 0 1 .75-.75zM4.354 12a.75.75 0 0 1 .75-.75h2.292a.75.75 0 0 1 0 1.5H5.104a.75.75 0 0 1-.75-.75zM16.604 12a.75.75 0 0 1 .75-.75h2.292a.75.75 0 0 1 0 1.5h-2.292a.75.75 0 0 1-.75-.75zM6.223 6.223a.75.75 0 0 1 1.06 0l1.623 1.623a.75.75 0 0 1-1.06 1.06L6.223 7.283a.75.75 0 0 1 0-1.06zM15.094 15.094a.75.75 0 0 1 1.06 0l1.623 1.623a.75.75 0 0 1-1.06 1.06l-1.623-1.623a.75.75 0 0 1 0-1.06zM6.223 17.777a.75.75 0 0 1 0 1.06l-1.623 1.623a.75.75 0 1 1-1.06-1.06l1.623-1.623a.75.75 0 0 1 1.06 0zM15.094 8.906a.75.75 0 0 1 0 1.06l-1.623 1.623a.75.75 0 1 1-1.06-1.06l1.623-1.623a.75.75 0 0 1 1.06 0zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z" />
-          </svg>
-        ) : (
-          // If light mode is active, show a moon icon (click to switch to dark mode)
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M21.752 15.002A9 9 0 0 1 12 3a9.002 9.002 0 0 0 0 18 9 9 0 0 0 9.752-5.998z" />
-          </svg>
-        )}
-      </button>
-      <div className="map-container" ref={mapContainerRef} />
-    </>
-  );
+  return <div className="map-container" ref={mapContainerRef} />;
 };
 
 export default App;

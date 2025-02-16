@@ -41,3 +41,16 @@
     margin: 20px;
   }
   
+
+  .mapboxgl-ctrl-top-right {
+    margin-top: 60px !important;
+  }
+  
+  /* Optional: Style the directions control */
+  .mapboxgl-ctrl-directions {
+    width: 300px !important;
+  }
+  
+  .directions-control-directions-container {
+    max-height: 50vh !important;
+  }
