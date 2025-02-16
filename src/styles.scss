@@ -1,0 +1,43 @@
+// Reset default styles
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html,
+  body,
+  #root,
+  .map-container {
+    width: 100%;
+    height: 100%;
+    font-family: Arial, sans-serif;
+  }
+  
+  .map-container {
+    position: relative;
+  }
+  
+  // Style for the toggle dark/light mode button
+  .toggle-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2; /* Ensures the button is on top of the map */
+    padding: 10px 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .toggle-button:hover {
+    background-color: #f0f0f0;
+  }
+  
+  // Optional: Adjust margins for Mapbox control containers
+  .mapboxgl-ctrl-top-left {
+    margin: 20px;
+  }
+  
